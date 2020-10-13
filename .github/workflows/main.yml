@@ -1,0 +1,67 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.2
+      with:
+       node-version: 12.x
+          
+    - name: install dependencies
+      run: npm install
+      
+    - name: Run build
+      run: npm run build 
+       
+    - name: copy dist digital ocean
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        source: ".,!node_modules"
+        target: "app/gobarber-backend-v2/"
+    
+    - name: install dependencies digital ocean
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+         cd ~/app/gobarber-backend-v2/
+         npm install
+         
+    - name: run migrations
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+         cd ~/app/gobarber-backend-v2/
+         ./node_modules/.bin/typeorm migration:run
+         
+    - name: restart server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+         pm2 restart server

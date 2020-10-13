@@ -1,0 +1,51 @@
+# GOBARBER BACKEND V2
+
+barber shop scheduling system backend 💚🚀🔥
+
+<p align='center'>
+<img src='https://user-images.githubusercontent.com/52014318/91243623-c64b1300-e720-11ea-8e1f-eaaf01bf3e03.png' height='400' />
+</p>
+
+## Requirements
+
+For development, you will only need Node.js installed on your environement.
+
+## Install
+
+    $ git clone https://github.com/ORG/PROJECT.git
+    $ cd PROJECT
+    $ npm install
+
+
+## Start & watch
+
+    $ npm start
+
+
+## Languages & tools
+
+- [Express](https://expressjs.com/pt-br/) Framework web rápido, flexível e minimalista para Node.js
+- [Eslint](https://eslint.org/) is used to prevent JavaScript error.
+- [Prettier](https://prettier.io/docs/en/index.html) is an opinionated code formatter.
+- [Typecript](https://www.typescriptlang.org/) TypeScript extends JavaScript by adding types.
+
+# Applied concepts
+
+### S.O.L.I.D
+
+[S]ingle Responsibility Principle
+[O]pen/Closed Principle
+[L]iskov Substitution Principle
+[I]nterface Segregation Principle
+[D]ependency Inversion Principle
+
+### DDD
+
+Domain-driven Design (DDD), described at its highest level of abstraction, basically refers to the two major layers of data design, strategic design and tactical design so that it will not be possible to successfully implement tactical design techniques without first applying strategic design practices.
+
+### TDD
+
+TDD is an acronym for Test Driven Development. The idea of ​​TDD is that you work in cycles. These cycles occur in the following order:
+• First, write a unit test that will initially fail, considering that the code has not yet been implemented;
+• Create the code that satisfies this test, that is: implement the functionality in question. This first implementation should immediately satisfy the test that was written in the previous cycle;
+• When the code is implemented and the test is satisfied, refactor the code to improve points such as readability. Soon after, run the test again. The new version of the code should also pass without having to modify the written test initially.

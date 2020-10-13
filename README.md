@@ -1,10 +1,6 @@
-# GOBARBER BACKEND V2
+# HAPPY
 
-barber shop scheduling system backend 💚🚀🔥
-
-<p align='center'>
-<img src='https://user-images.githubusercontent.com/52014318/91243623-c64b1300-e720-11ea-8e1f-eaaf01bf3e03.png' height='400' />
-</p>
+happy system backend 💚🚀🔥
 
 ## Requirements
 
@@ -16,11 +12,9 @@ For development, you will only need Node.js installed on your environement.
     $ cd PROJECT
     $ npm install
 
-
 ## Start & watch
 
     $ npm start
-
 
 ## Languages & tools
 

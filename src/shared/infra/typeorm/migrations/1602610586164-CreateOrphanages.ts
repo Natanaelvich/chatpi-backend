@@ -14,6 +14,10 @@ export default class CreateOrphanages1602610586164
             generationStrategy: 'uuid',
           },
           {
+            name: 'name',
+            type: 'varchar',
+          },
+          {
             name: 'latitude',
             type: 'decimal(10,2)',
           },

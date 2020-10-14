@@ -14,6 +14,9 @@ class Orphanage {
   id: string;
 
   @Column()
+  name: string;
+
+  @Column()
   latitude: number;
 
   @Column()

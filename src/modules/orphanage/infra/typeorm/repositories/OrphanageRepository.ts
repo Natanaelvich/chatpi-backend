@@ -33,8 +33,10 @@ class OrphanageRepository implements IOrphanageRepository {
     open_hours,
     open_on_weekends,
     images,
+    name,
   }: ICreateOrphanageDTO): Promise<Orphanage> {
     const response = this.ormRepository.create({
+      name,
       about,
       instructions,
       latitude,

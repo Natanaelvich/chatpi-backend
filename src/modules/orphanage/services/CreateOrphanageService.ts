@@ -17,6 +17,7 @@ class CreateOrphanageService {
   ) {}
 
   public async execute({
+    name,
     about,
     instructions,
     latitude,
@@ -26,6 +27,7 @@ class CreateOrphanageService {
     images,
   }: ICreateOrphanageDTO): Promise<Orphanage> {
     const orphanage = this.orphanageRepository.create({
+      name,
       about,
       instructions,
       latitude,

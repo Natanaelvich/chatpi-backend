@@ -28,8 +28,8 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   if (err instanceof ValidationError) {
     const errors: ValidationErrors = {};
 
-    err.inner.forEach(err => {
-      errors[err.path] = err.errors;
+    err.inner.forEach(erro => {
+      errors[erro.path] = erro.errors;
     });
 
     return response.status(400).json({

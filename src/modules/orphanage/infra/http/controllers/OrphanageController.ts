@@ -21,7 +21,7 @@ export default class OrphanageController {
 
     const orphanages = await listOrphanageService.execute();
 
-    return response.status(201).json(orphanages);
+    return response.status(201).json(classToClass(orphanages));
   }
 
   public async create(request: Request, response: Response): Promise<Response> {

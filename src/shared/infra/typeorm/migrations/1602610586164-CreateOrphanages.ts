@@ -19,11 +19,15 @@ export default class CreateOrphanages1602610586164
           },
           {
             name: 'latitude',
-            type: 'decimal(10,2)',
+            type: 'decimal',
+            scale: 7,
+            precision: 65,
           },
           {
             name: 'longitude',
-            type: 'decimal(10,2)',
+            type: 'decimal',
+            scale: 7,
+            precision: 65,
           },
           {
             name: 'about',

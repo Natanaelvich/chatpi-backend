@@ -11,6 +11,20 @@ class OrphanageRepository implements IOrphanageRepository {
     this.ormRepository = getRepository(Orphanage);
   }
 
+  public async findById(orphanageId: string): Promise<Orphanage | undefined> {
+    const orphanage = await this.ormRepository.findOne(orphanageId, {
+      relations: ['images'],
+    });
+
+    return orphanage;
+  }
+
+  public async findAll(): Promise<Orphanage[]> {
+    const orphanages = await this.ormRepository.find({ relations: ['images'] });
+
+    return orphanages;
+  }
+
   public async create({
     about,
     instructions,
@@ -18,19 +32,21 @@ class OrphanageRepository implements IOrphanageRepository {
     longitude,
     open_hours,
     open_on_weekends,
+    images,
   }: ICreateOrphanageDTO): Promise<Orphanage> {
-    const response = await this.ormRepository.create({
+    const response = this.ormRepository.create({
       about,
       instructions,
       latitude,
       longitude,
       open_hours,
       open_on_weekends,
+      images,
     });
 
-    const user = await this.save(response);
+    const orphanage = await this.save(response);
 
-    return user;
+    return orphanage;
   }
 
   public async save(orphanage: Orphanage): Promise<Orphanage> {

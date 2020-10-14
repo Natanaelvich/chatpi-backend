@@ -10,12 +10,14 @@ import '@shared/container';
 
 import AppError from '@shared/errors/AppError';
 import { errors } from 'celebrate';
+import upload from '@config/upload';
 import routes from './routes';
 
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
 
 app.use(express.json());
+app.use('/files', express.static(upload.tmpFolfer));
 app.use(routes);
 
 app.use(errors());

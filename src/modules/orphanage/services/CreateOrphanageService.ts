@@ -23,6 +23,7 @@ class CreateOrphanageService {
     longitude,
     open_hours,
     open_on_weekends,
+    images,
   }: ICreateOrphanageDTO): Promise<Orphanage> {
     const orphanage = this.orphanageRepository.create({
       about,
@@ -31,6 +32,7 @@ class CreateOrphanageService {
       longitude,
       open_hours,
       open_on_weekends,
+      images,
     });
 
     return orphanage;

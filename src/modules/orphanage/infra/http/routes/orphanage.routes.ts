@@ -1,24 +1,15 @@
-import { celebrate, Joi, Segments } from 'celebrate';
+import upload from '@config/upload';
 import { Router } from 'express';
+import multer from 'multer';
 import OrphanageController from '../controllers/OrphanageController';
 
 const orphanageController = new OrphanageController();
 
+const uploader = multer(upload.multer);
 const orphanageRouter = Router();
 
-orphanageRouter.post(
-  '/',
-  celebrate({
-    [Segments.BODY]: {
-      about: Joi.string().required(),
-      instructions: Joi.string().required(),
-      latitude: Joi.number().required(),
-      longitude: Joi.number().required(),
-      open_hours: Joi.string().required(),
-      open_on_weekends: Joi.boolean().required(),
-    },
-  }),
-  orphanageController.create,
-);
+orphanageRouter.post('/', uploader.array('images'), orphanageController.create);
+orphanageRouter.get('/', orphanageController.index);
+orphanageRouter.get('/:orphanageId', orphanageController.show);
 
 export default orphanageRouter;

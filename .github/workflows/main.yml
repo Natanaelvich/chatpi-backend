@@ -30,7 +30,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         source: ".,!node_modules"
-        target: "app/happy/"
+        target: "app/happy-backend/"
     
     - name: install dependencies digital ocean
       uses: appleboy/ssh-action@master
@@ -40,7 +40,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-         cd ~/app/happy/
+         cd ~/app/happy/-backend
          npm install
          
     - name: run migrations
@@ -51,7 +51,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-         cd ~/app/happy/
+         cd ~/app/happy-backend
          ./node_modules/.bin/typeorm migration:run
          
     - name: restart server

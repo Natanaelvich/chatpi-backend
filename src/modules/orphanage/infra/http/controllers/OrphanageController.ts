@@ -42,7 +42,7 @@ export default class OrphanageController {
       latitude,
       longitude,
       open_hours,
-      open_on_weekends,
+      open_on_weekends: open_on_weekends === 'true',
     };
 
     const schema = Yup.object().shape({
@@ -71,16 +71,7 @@ export default class OrphanageController {
 
     const createUser = container.resolve(CreateOrphanageService);
 
-    const orphanage = await createUser.execute({
-      name,
-      about,
-      instructions,
-      latitude,
-      longitude,
-      open_hours,
-      open_on_weekends,
-      images,
-    });
+    const orphanage = await createUser.execute({ ...data, images });
 
     return response.status(201).json(orphanage);
   }

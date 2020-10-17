@@ -7,6 +7,8 @@ import IUserTokenRepository from '@modules/users/repositories/IUserTokenReposito
 import UserTokenRepository from '@modules/users/infra/typeorm/repositories/UserTokenRepository';
 import IOrphanageRepository from '@modules/orphanage/repositories/IOrphanageRepository';
 import OrphanageRepository from '@modules/orphanage/infra/typeorm/repositories/OrphanageRepository';
+import ILocationRepository from '@modules/locations/repositories/ILocationRepository';
+import LocationRepository from '@modules/locations/infra/typeorm/repositories/LocationRepository';
 
 container.registerSingleton<IOrphanageRepository>(
   'OrphanageRepository',
@@ -16,4 +18,8 @@ container.registerSingleton<IUserRepository>('UserRepository', UserRepository);
 container.registerSingleton<IUserTokenRepository>(
   'UserTokenRepository',
   UserTokenRepository,
+);
+container.registerSingleton<ILocationRepository>(
+  'LocationRepository',
+  LocationRepository,
 );

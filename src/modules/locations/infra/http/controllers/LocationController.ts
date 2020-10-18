@@ -2,8 +2,17 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import * as Yup from 'yup';
 import CreateLocationService from '@modules/locations/services/CreateLocationService';
+import ListLocationsService from '@modules/locations/services/ListLocationsService';
 
 export default class LocationController {
+  public async index(request: Request, response: Response): Promise<Response> {
+    const listLocationsService = container.resolve(ListLocationsService);
+
+    const locations = await listLocationsService.execute();
+
+    return response.status(201).json(locations);
+  }
+
   public async create(request: Request, response: Response): Promise<Response> {
     const { latitude, longitude } = request.body;
 

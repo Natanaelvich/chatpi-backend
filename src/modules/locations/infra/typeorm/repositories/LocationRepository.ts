@@ -11,6 +11,12 @@ class LocationRepository implements ILocationRepository {
     this.ormRepository = getRepository(Location);
   }
 
+  public async findAll(): Promise<Location[]> {
+    const locations = this.ormRepository.find();
+
+    return locations;
+  }
+
   public async create({
     latitude,
     longitude,

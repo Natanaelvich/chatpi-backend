@@ -25,6 +25,10 @@ export default class LocationController {
 
     const location = await createLocationService.execute(data);
 
+    const loggedSocket = request.connectedUsers['123456'];
+
+    request.io.to(loggedSocket).emit('location', JSON.stringify(data));
+
     return response.status(201).json(location);
   }
 }

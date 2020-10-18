@@ -8,6 +8,8 @@ import { ValidationError } from 'yup';
 
 import '@shared/infra/typeorm';
 import '@shared/container';
+import { Server } from 'http';
+import socket from 'socket.io';
 
 import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
@@ -18,10 +20,27 @@ interface ValidationErrors {
 }
 
 const app = express();
+const http = new Server(app);
+const io = socket(http);
+
+const connectedUsers = {} as any;
+
+io.on('connection', socketIo => {
+  const { user } = socketIo.handshake.query;
+
+  connectedUsers[user] = socketIo.id;
+});
+
 app.use(cors({ credentials: true, origin: true }));
 
 app.use(express.json());
 app.use('/files', express.static(upload.tmpFolfer));
+app.use((request: Request, _: Response, next: NextFunction) => {
+  request.io = io;
+  request.connectedUsers = connectedUsers;
+
+  return next();
+});
 app.use(routes);
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
@@ -53,4 +72,4 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-app.listen(3334);
+http.listen(3334);

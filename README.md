@@ -2,6 +2,11 @@
 
 happy system backend 💚🚀🔥
 
+# Tasks
+
+- [] docker run migrations
+- [] docker init server after instance mysql
+
 ## Requirements
 
 For development, you will only need Node.js installed on your environement.

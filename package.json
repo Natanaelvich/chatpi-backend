@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
-    "start": "tsnd -r tsconfig-paths/register --transpile-only --ignore-watch node_modules --respawn src/shared/infra/http/server.ts",
+    "start": "node dist/shared/infra/http/server.js",
+    "dev": "tsnd -r tsconfig-paths/register --transpile-only --ignore-watch node_modules --respawn src/shared/infra/http/server.ts",
     "typeorm": "tsnd -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "test": "jest"
   },

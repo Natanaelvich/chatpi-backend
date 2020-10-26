@@ -1,3 +1,4 @@
+
 FROM node:alpine
 
 WORKDIR /usr/app
@@ -10,6 +11,4 @@ COPY . .
 
 EXPOSE 3334
 
-CMD ["npm","start"]
-
-ENTRYPOINT [ "./init.sh" ]
+CMD ["npm","run","dev"]

@@ -1,13 +1,26 @@
 version: '3.1'
 
 services:
+  mysql-nwl3:
+    image: mysql:latest
+    container_name: mysql-nwl3
+    environment:
+      - MYSQL_DATABASE=happy
+      - MYSQL_USER=natan
+      - MYSQL_PASSWORD=natan12345
+      - MYSQL_ROOT_PASSWORD=abc123
+      - MYSQL_ROOT_HOST=%
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
+    networks:
+      - app_network
+
   app:
     build: '.'
-    command: npm start
+    command: npm run dev
     container_name: app
     depends_on:
-      - mysql-nwl3
-    links:
       - mysql-nwl3
     volumes:
       - .:/usr/app
@@ -18,27 +31,6 @@ services:
     ports:
       - '3334:3334'
 
-  mysql-nwl3:
-    image: mysql:latest
-    container_name: mysql-nwl3
-    restart: unless-stopped
-    environment:
-      - MYSQL_DATABASE=happy
-      - MYSQL_USER=natan
-      - MYSQL_PASSWORD=natan12345
-      - MYSQL_ROOT_PASSWORD=abc123
-    command: --default-authentication-plugin=mysql_native_password
-    volumes:
-      - mysql_data:/var/lib/mysql
-    ports:
-      - '3306:3306'
-    networks:
-      - app_network
-    env_file:
-      - .env
-
 networks:
   app_network:
-
-volumes:
-  mysql_data:
+    driver: bridge

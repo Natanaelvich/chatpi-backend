@@ -9,48 +9,42 @@ services:
       - MYSQL_USER=natan
       - MYSQL_PASSWORD=natan12345
       - MYSQL_ROOT_PASSWORD=abc123
-      - MYSQL_ROOT_HOST=%
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - '3306:3306'
     networks:
       - app_network
 
-  build:
-    build: .
-    image: app
-    container_name: build
-    command: dockerize -wait tcp://mysql-nwl3:3306 -timeout 60m npm run build
-    volumes:
-      - .:/home/node/api
-    networks:
-      - app_network
-    depends_on:
-      - mysql-nwl3
-
-  # migration:
+  # build:
   #   build: .
-  #   image: app
-  #   container_name: migration
-  #   command: dockerize -wait tcp://mysql-nwl3:3306 -timeout 60m npm run migrate
+  #   container_name: build
+  #   command: dockerize -wait tcp://mysql-nwl3:3306 -timeout 60m npm run build
   #   volumes:
-  #     - .:/home/node/api
-  #     - /home/node/api/node_modules
+  #     - .:/usr/app
   #   networks:
   #     - app_network
   #   depends_on:
   #     - mysql-nwl3
 
+  migration:
+    build: .
+    container_name: migration
+    command: dockerize -wait tcp://mysql-nwl3:3306 -timeout 60m npm run typeorm migration:run
+    volumes:
+      - .:/usr/app
+    networks:
+      - app_network
+    depends_on:
+      - mysql-nwl3
+
   app:
     build: .
-    command: npm run start
+    command: dockerize -wait tcp://mysql-nwl3:3306 -timeout 60m npm run dev
     container_name: app
     depends_on:
       - mysql-nwl3
-      - build
     volumes:
-      - .:/home/node/api
-      - /home/node/api/node_modules
+      - .:/usr/app
     env_file:
       - .env
     networks:

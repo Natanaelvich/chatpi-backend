@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { classToClass } from 'class-transformer';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 export default class OrphanageController {
   public async show(request: Request, response: Response): Promise<Response> {
@@ -72,6 +73,29 @@ export default class OrphanageController {
     const createUser = container.resolve(CreateOrphanageService);
 
     const orphanage = await createUser.execute({ ...data, images });
+
+    console.log(request.connectedUsers);
+    const loggedSocket = request.connectedUsers['bg-notification'];
+
+    request.io.to(loggedSocket).emit('orphanage', JSON.stringify(data));
+
+    const sendNotification = async (): Promise<void> => {
+      try {
+        await axios.post('https://exp.host/--/api/v2/push/send', {
+          to: 'ExponentPushToken[QXSncwCQH9PEdn0H-NsjIC]',
+          sound: 'default',
+          title: 'Novo orfanato',
+          body: 'Confira o novo orfanato cadastrado',
+          data: {
+            data: 'goeshere',
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    sendNotification();
 
     return response.status(201).json(orphanage);
   }

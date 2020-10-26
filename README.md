@@ -4,8 +4,8 @@ happy system backend 💚🚀🔥
 
 # Tasks
 
-- [] docker run migrations
-- [] docker init server after instance mysql
+- [ ] docker run migrations
+- [ ] docker init server after instance mysql
 
 ## Requirements
 

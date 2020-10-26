@@ -10,4 +10,6 @@ COPY . .
 
 EXPOSE 3334
 
-CMD ["npm","run","dev"]
+CMD ["npm","start"]
+
+ENTRYPOINT [ "./init.sh" ]

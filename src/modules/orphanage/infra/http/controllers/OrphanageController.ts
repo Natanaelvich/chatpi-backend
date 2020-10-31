@@ -74,7 +74,6 @@ export default class OrphanageController {
 
     const orphanage = await createUser.execute({ ...data, images });
 
-    console.log(request.connectedUsers);
     const loggedSocket = request.connectedUsers['bg-notification'];
 
     request.io.to(loggedSocket).emit('orphanage', JSON.stringify(data));
@@ -82,7 +81,7 @@ export default class OrphanageController {
     const sendNotification = async (): Promise<void> => {
       try {
         await axios.post('https://exp.host/--/api/v2/push/send', {
-          to: 'ExponentPushToken[QXSncwCQH9PEdn0H-NsjIC]',
+          to: 'ExponentPushToken[YH7bVLLdBVBCttzIejyqdv]',
           sound: 'default',
           title: 'Novo orfanato',
           body: 'Confira o novo orfanato cadastrado',

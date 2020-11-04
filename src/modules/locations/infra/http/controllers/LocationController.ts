@@ -21,6 +21,8 @@ export default class LocationController {
       longitude,
     };
 
+    console.log(latitude, longitude);
+
     const schema = Yup.object().shape({
       latitude: Yup.string().required(),
       longitude: Yup.string().required(),

@@ -8,7 +8,6 @@
     "start": "node dist/shared/infra/http/server.js",
     "dev": "tsnd -r tsconfig-paths/register --transpile-only --ignore-watch node_modules --respawn src/shared/infra/http/server.ts",
     "typeorm": "tsnd -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migrate:dev": "typeorm migration:run",
     "migrate": "./node_modules/.bin/typeorm migration:run"
   },
   "dependencies": {
@@ -26,6 +25,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "handlebars": "^4.7.6",
     "jsonwebtoken": "^8.5.1",
     "mime": "^2.4.6",
     "mongodb": "^3.6.2",
@@ -36,7 +36,9 @@
     "tsyringe": "^4.3.0",
     "typeorm": "^0.2.25",
     "uuid": "^8.3.0",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "nodemailer": "^6.4.11",
+    "rate-limiter-flexible": "^2.1.10"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.3",

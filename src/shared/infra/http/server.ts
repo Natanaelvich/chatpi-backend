@@ -17,7 +17,7 @@ import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
 import routes from './routes';
 
-const port = proccess.env.PORT || 3334;
+const port = process.env.PORT || 3334;
 
 interface ValidationErrors {
   [key: string]: string[];

@@ -17,6 +17,8 @@ import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
 import routes from './routes';
 
+const port = proccess.env.PORT || 3334;
+
 interface ValidationErrors {
   [key: string]: string[];
 }
@@ -99,4 +101,4 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-http.listen(3333);
+http.listen(port);

@@ -1,11 +1,6 @@
-# HAPPY
+# PI BACKEND
 
-happy system backend 💚🚀🔥
-
-# Tasks
-
-- [ ] docker run migrations
-- [ ] docker init server after instance mysql
+college integrator project system backend 💚🚀🔥
 
 ## Requirements
 

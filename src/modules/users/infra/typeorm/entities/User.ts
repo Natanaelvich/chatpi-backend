@@ -1,4 +1,5 @@
-import { Exclude } from 'class-transformer';
+import upload from '@config/upload';
+import { Exclude, Expose } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -18,6 +19,9 @@ class User {
   email: string;
 
   @Column()
+  avatar: string;
+
+  @Column()
   @Exclude()
   password: string;
 
@@ -26,6 +30,29 @@ class User {
 
   @CreateDateColumn()
   updated_at: Date;
+
+  @Expose({ name: 'avatar_url' })
+  getAvatar_url(): string | null {
+    if (!this.avatar) {
+      return null;
+    }
+
+    switch (upload.driver) {
+      case 'disk':
+        return this.avatar
+          ? `${process.env.APP_API_URL}/files/${this.avatar}`
+          : null;
+        break;
+      case 's3':
+        return this.avatar
+          ? `https://${upload.config.aws.bucket}.s3.amazonaws.com/${this.avatar}`
+          : null;
+        break;
+      default:
+        return null;
+        break;
+    }
+  }
 }
 
 export default User;

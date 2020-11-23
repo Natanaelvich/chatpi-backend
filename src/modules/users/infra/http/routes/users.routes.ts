@@ -14,6 +14,7 @@ const usersRouter = Router();
 const uploader = multer(upload.multer);
 
 usersRouter.post('/', usersController.create);
+usersRouter.get('/', usersController.index);
 
 usersRouter.patch(
   '/avatar',

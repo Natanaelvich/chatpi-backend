@@ -33,8 +33,17 @@ io.on('connection', socketIo => {
   connectedUsers[user] = socketIo.id;
 
   socketIo.on('message', message => {
-    socketIo.broadcast.emit('message', message);
+    const dataMessage = JSON.parse(message);
+    io.to(connectedUsers[dataMessage.toUser]).emit('message', message);
   });
+
+  socketIo.once('disconnect', () => {
+    delete connectedUsers[user];
+
+    io.emit('usersLoggeds', JSON.stringify(connectedUsers));
+  });
+
+  io.emit('usersLoggeds', JSON.stringify(connectedUsers));
 });
 
 app.use(cors({ credentials: true, origin: true }));
@@ -51,7 +60,7 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
 app.use(express.json());
-app.use('/files', express.static(upload.tmpFolfer));
+app.use('/files', express.static(upload.uploadsFolder));
 app.use((request: Request, _: Response, next: NextFunction) => {
   request.io = io;
   request.connectedUsers = connectedUsers;

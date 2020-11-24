@@ -28,6 +28,7 @@ const http = new Server(app);
 const io = socket(http);
 
 const connectedUsers = {} as any;
+const typers = {} as any;
 
 io.on('connection', socketIo => {
   const { user } = socketIo.handshake.query;
@@ -36,7 +37,19 @@ io.on('connection', socketIo => {
 
   socketIo.on('message', message => {
     const dataMessage = JSON.parse(message);
+    delete typers[dataMessage.user];
+    io.emit('typing', typers);
     io.to(connectedUsers[dataMessage.toUser]).emit('message', message);
+  });
+
+  socketIo.on('typing', typer => {
+    typers[typer.user] = 1;
+    io.emit('typing', typers);
+  });
+
+  socketIo.on('typingBlur', typer => {
+    delete typers[typer.user];
+    io.emit('typing', typers);
   });
 
   socketIo.once('disconnect', () => {

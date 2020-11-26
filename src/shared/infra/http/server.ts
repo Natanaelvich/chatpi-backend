@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
+import avatarsMiddleware from 'adorable-avatars';
 import cors from 'cors';
 import { ValidationError } from 'yup';
 import * as Sentry from '@sentry/node';
@@ -62,6 +63,7 @@ io.on('connection', socketIo => {
 });
 
 app.use(cors({ credentials: true, origin: true }));
+app.use('/myAvatars', avatarsMiddleware);
 
 Sentry.init({
   dsn: process.env.SENTRY_DNS,
@@ -71,6 +73,7 @@ Sentry.init({
   ],
   tracesSampleRate: 1.0,
 });
+
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 

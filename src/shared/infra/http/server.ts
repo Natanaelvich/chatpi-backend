@@ -18,7 +18,7 @@ import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
 import routes from './routes';
 
-const port = process.env.PORT || 3334;
+const port = process.env.PORT || 3335;
 
 interface ValidationErrors {
   [key: string]: string[];
@@ -38,19 +38,33 @@ io.on('connection', socketIo => {
 
   socketIo.on('message', message => {
     const dataMessage = JSON.parse(message);
+
     delete typers[dataMessage.user];
-    io.emit('typing', typers);
+    io.to(connectedUsers[dataMessage.toUser]).emit(
+      'typing',
+      JSON.stringify(typers),
+    );
+
     io.to(connectedUsers[dataMessage.toUser]).emit('message', message);
   });
 
   socketIo.on('typing', typer => {
-    typers[typer.user] = 1;
-    io.emit('typing', typers);
+    const typerParsed = JSON.parse(typer);
+    typers[typerParsed.user] = 1;
+
+    io.to(connectedUsers[typerParsed.toUser]).emit(
+      'typing',
+      JSON.stringify(typers),
+    );
   });
 
   socketIo.on('typingBlur', typer => {
+    const typerParsed = JSON.parse(typer);
     delete typers[typer.user];
-    io.emit('typing', typers);
+    io.to(connectedUsers[typerParsed.toUser]).emit(
+      'typing',
+      JSON.stringify(typers),
+    );
   });
 
   socketIo.once('disconnect', () => {

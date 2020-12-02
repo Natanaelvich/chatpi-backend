@@ -28,8 +28,8 @@ const app = express();
 const http = new Server(app);
 const io = socket(http);
 
-const connectedUsers = {} as any;
-const typers = {} as any;
+const connectedUsers = {} as Record<string, string>;
+const typers = {} as Record<string, string>;
 
 io.on('connection', socketIo => {
   const { user } = socketIo.handshake.query;
@@ -50,7 +50,7 @@ io.on('connection', socketIo => {
 
   socketIo.on('typing', typer => {
     const typerParsed = JSON.parse(typer);
-    typers[typerParsed.user] = 1;
+    typers[typerParsed.user] = 'typer';
 
     io.to(connectedUsers[typerParsed.toUser]).emit(
       'typing',

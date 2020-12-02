@@ -7,7 +7,7 @@ declare global {
         id: string;
       };
       io: Server;
-      connectedUsers: any;
+      connectedUsers: Record<string, string>;
     }
   }
 }

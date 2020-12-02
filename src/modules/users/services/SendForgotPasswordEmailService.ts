@@ -24,13 +24,13 @@ class SendForgotPasswordEmailService {
   ) {}
 
   public async execute({ email }: Request): Promise<void> {
-    const userExisits = await this.userRepository.findByEmail(email);
+    const userExistis = await this.userRepository.findByEmail(email);
 
-    if (!userExisits) {
+    if (!userExistis) {
       throw new AppError('User does not exists');
     }
 
-    const { token } = await this.userTokenRepository.generate(userExisits.id);
+    const { token } = await this.userTokenRepository.generate(userExistis.id);
 
     const forgotPasswordTemplate = path.resolve(
       __dirname,
@@ -41,14 +41,14 @@ class SendForgotPasswordEmailService {
 
     await this.mailProvider.sendMail({
       to: {
-        name: userExisits.name,
-        email: userExisits.email,
+        name: userExistis.name,
+        email: userExistis.email,
       },
-      subject: '[Gobarber] Recuperação de senha',
+      subject: '[ChatPI] Recuperação de senha',
       templateData: {
         file: forgotPasswordTemplate,
         variables: {
-          name: userExisits.name,
+          name: userExistis.name,
           link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
         },
       },

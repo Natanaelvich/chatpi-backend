@@ -40,6 +40,7 @@ io.on('connection', socketIo => {
     const dataMessage = JSON.parse(message);
 
     delete typers[dataMessage.user];
+
     io.to(connectedUsers[dataMessage.toUser]).emit(
       'typing',
       JSON.stringify(typers),
@@ -50,6 +51,7 @@ io.on('connection', socketIo => {
 
   socketIo.on('typing', typer => {
     const typerParsed = JSON.parse(typer);
+
     typers[typerParsed.user] = 'typer';
 
     io.to(connectedUsers[typerParsed.toUser]).emit(
@@ -60,7 +62,9 @@ io.on('connection', socketIo => {
 
   socketIo.on('typingBlur', typer => {
     const typerParsed = JSON.parse(typer);
-    delete typers[typer.user];
+
+    delete typers[typerParsed.user];
+
     io.to(connectedUsers[typerParsed.toUser]).emit(
       'typing',
       JSON.stringify(typers),
@@ -69,6 +73,7 @@ io.on('connection', socketIo => {
 
   socketIo.once('disconnect', () => {
     delete connectedUsers[user];
+    delete typers[user];
 
     io.emit('usersLoggeds', JSON.stringify(connectedUsers));
   });

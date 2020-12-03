@@ -15,7 +15,7 @@ const mailConfig = {
   defaults: {
     from: {
       email: 'natanaelima@mundotech.dev',
-      name: 'Natanael da Silva Lima',
+      name: 'Chat PI',
     },
   },
 } as ImailConfig;

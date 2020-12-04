@@ -16,9 +16,12 @@ import socket from 'socket.io';
 
 import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
+import RedisCacheProvider from '@shared/container/providers/CacheProvider/implementations/RedisCacheProvider';
 import routes from './routes';
 
 const port = process.env.PORT || 3335;
+
+const cache = new RedisCacheProvider();
 
 interface ValidationErrors {
   [key: string]: string[];
@@ -31,12 +34,12 @@ const io = socket(http);
 const connectedUsers = {} as Record<string, string>;
 const typers = {} as Record<string, string>;
 
-io.on('connection', socketIo => {
+io.on('connection', async socketIo => {
   const { user } = socketIo.handshake.query;
 
   connectedUsers[user] = socketIo.id;
 
-  socketIo.on('message', message => {
+  socketIo.on('message', async message => {
     const dataMessage = JSON.parse(message);
 
     delete typers[dataMessage.user];
@@ -47,6 +50,25 @@ io.on('connection', socketIo => {
     );
 
     io.to(connectedUsers[dataMessage.toUser]).emit('message', message);
+
+    if (!connectedUsers[dataMessage.toUser]) {
+      const messages = await cache.recover<any>(dataMessage.toUser);
+
+      const messageParse = JSON.parse(message);
+
+      if (messages) {
+        await cache.save(dataMessage.toUser, [
+          ...messages,
+          { ...messageParse },
+        ]);
+      } else {
+        await cache.save(dataMessage.toUser, [{ ...messageParse }]);
+      }
+    }
+  });
+
+  socketIo.on('deleteMessagesCache', async () => {
+    await cache.invalidate(user);
   });
 
   socketIo.on('typing', typer => {
@@ -76,9 +98,16 @@ io.on('connection', socketIo => {
     delete typers[user];
 
     io.emit('usersLoggeds', JSON.stringify(connectedUsers));
+    io.emit('typing', JSON.stringify(typers));
   });
 
   io.emit('usersLoggeds', JSON.stringify(connectedUsers));
+
+  const messages = await cache.recover<any>(user);
+
+  if (messages) {
+    io.to(connectedUsers[user]).emit('messagesCache', JSON.stringify(messages));
+  }
 });
 
 app.use(cors({ credentials: true, origin: true }));

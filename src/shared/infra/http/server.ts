@@ -56,6 +56,11 @@ io.on('connection', async socketIo => {
 
       const messageParse = JSON.parse(message);
 
+      console.log('messages');
+      console.log(messages);
+      console.log('messageParse');
+      console.log(messageParse);
+
       if (messages) {
         await cache.save(dataMessage.toUser, [
           ...messages,
@@ -65,10 +70,6 @@ io.on('connection', async socketIo => {
         await cache.save(dataMessage.toUser, [{ ...messageParse }]);
       }
     }
-  });
-
-  socketIo.on('deleteMessagesCache', async () => {
-    await cache.invalidate(user);
   });
 
   socketIo.on('typing', typer => {
@@ -106,8 +107,14 @@ io.on('connection', async socketIo => {
   const messages = await cache.recover<any>(user);
 
   if (messages) {
+    console.log('110 messages');
+    console.log(messages);
     io.to(connectedUsers[user]).emit('messagesCache', JSON.stringify(messages));
   }
+
+  socketIo.on('deleteMessagesCache', async () => {
+    await cache.invalidate(user);
+  });
 });
 
 app.use(cors({ credentials: true, origin: true }));

@@ -8,6 +8,7 @@ import cors from 'cors';
 import { ValidationError } from 'yup';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import axios from 'axios';
 
 import '@shared/infra/typeorm';
 import '@shared/container';
@@ -54,15 +55,30 @@ io.on('connection', async socketIo => {
     if (!connectedUsers[dataMessage.toUser]) {
       const messages = await cache.recover<any>(dataMessage.toUser);
 
-      const messageParse = JSON.parse(message);
-
       if (messages) {
-        await cache.save(dataMessage.toUser, [
-          ...messages,
-          { ...messageParse },
-        ]);
+        await cache.save(dataMessage.toUser, [...messages, { ...dataMessage }]);
       } else {
-        await cache.save(dataMessage.toUser, [{ ...messageParse }]);
+        await cache.save(dataMessage.toUser, [{ ...dataMessage }]);
+      }
+
+      const tokenExpo = await cache.recover<any>(
+        `${dataMessage.toUser}:expo_token`,
+      );
+
+      if (tokenExpo) {
+        try {
+          await axios.post('https://exp.host/--/api/v2/push/send', {
+            to: tokenExpo,
+            sound: 'default',
+            title: dataMessage.name,
+            body: dataMessage.message,
+            data: {
+              data: 'goeshere',
+            },
+          });
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   });
@@ -87,6 +103,10 @@ io.on('connection', async socketIo => {
       'typing',
       JSON.stringify(typers),
     );
+  });
+
+  socketIo.on('expoToken', async token => {
+    await cache.save(`${user}:expo_token`, token);
   });
 
   socketIo.once('disconnect', () => {

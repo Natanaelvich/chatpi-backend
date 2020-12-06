@@ -108,7 +108,6 @@ io.on('connection', async socketIo => {
   });
 
   socketIo.on('expoToken', async token => {
-    console.log('expo token on ', token);
     await cache.save(`${user}:expo_token`, token);
   });
 

@@ -64,10 +64,8 @@ io.on('connection', async socketIo => {
       const tokenExpo = await cache.recover<any>(
         `${dataMessage.toUser}:expo_token`,
       );
-      console.log(tokenExpo);
 
       if (tokenExpo) {
-        console.log('send notification');
         try {
           await axios.post('https://exp.host/--/api/v2/push/send', {
             to: tokenExpo,

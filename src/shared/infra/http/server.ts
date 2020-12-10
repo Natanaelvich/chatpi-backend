@@ -77,7 +77,7 @@ io.on('connection', async socketIo => {
             },
           });
         } catch (error) {
-          console.error(error);
+          console.warn(error);
         }
       }
     }
@@ -174,7 +174,7 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
     });
   }
 
-  console.log(err);
+  console.warn(err);
 
   return response.status(500).json({
     status: 'error',

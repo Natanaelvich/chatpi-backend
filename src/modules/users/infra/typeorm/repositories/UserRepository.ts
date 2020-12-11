@@ -1,6 +1,6 @@
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
 import IUserRepository from '@modules/users/repositories/IUserRepository';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Not, Repository } from 'typeorm';
 import User from '../entities/User';
 
 class UserRepository implements IUserRepository {
@@ -12,6 +12,17 @@ class UserRepository implements IUserRepository {
 
   public async findAll(): Promise<User[]> {
     const users = await this.ormRepository.find();
+
+    return users;
+  }
+
+  public async listAttendantes(except_user_id: string): Promise<User[]> {
+    const users = await this.ormRepository.find({
+      where: {
+        clerk: Not('null'),
+        id: Not(except_user_id),
+      },
+    });
 
     return users;
   }
@@ -34,11 +45,13 @@ class UserRepository implements IUserRepository {
     email,
     name,
     password,
+    clerk,
   }: ICreateUserDTO): Promise<User> {
     const response = await this.ormRepository.create({
       name,
       email,
       password,
+      clerk,
     });
 
     const user = await this.save(response);

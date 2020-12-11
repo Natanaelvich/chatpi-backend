@@ -3,12 +3,7 @@ import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import IUserRepository from '../repositories/IUserRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
-
-interface Request {
-  name: string;
-  email: string;
-  password: string;
-}
+import ICreateUserDTO from '../dtos/ICreateUserDTO';
 
 @injectable()
 class CreateUserService {
@@ -20,7 +15,12 @@ class CreateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ name, email, password }: Request): Promise<User> {
+  public async execute({
+    name,
+    email,
+    password,
+    clerk,
+  }: ICreateUserDTO): Promise<User> {
     const userExists = await this.userRepository.findByEmail(email);
 
     if (userExists) {
@@ -32,6 +32,7 @@ class CreateUserService {
     const user = this.userRepository.create({
       name,
       email,
+      clerk,
       password: hashedPassword,
     });
 

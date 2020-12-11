@@ -19,6 +19,9 @@ class User {
   email: string;
 
   @Column()
+  clerk: string;
+
+  @Column()
   avatar: string;
 
   @Column()

@@ -73,7 +73,7 @@ io.on('connection', async socketIo => {
             title: dataMessage.name,
             body: dataMessage.message,
             data: {
-              data: 'goeshere',
+              data: 'hello',
             },
           });
         } catch (error) {

@@ -19,6 +19,7 @@ For development, you will only need Node.js installed on your environement.
 ## Languages & tools
 
 - [Express](https://expressjs.com/pt-br/) Framework web rápido, flexível e minimalista para Node.js
+- [TypeORM](https://typeorm.io/#/) TypeORM is an ORM that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native, NativeScript, Expo, and Electron platforms and can be used with TypeScript and JavaScript (ES5, ES6, ES7, ES8).
 - [Eslint](https://eslint.org/) is used to prevent JavaScript error.
 - [Prettier](https://prettier.io/docs/en/index.html) is an opinionated code formatter.
 - [Typecript](https://www.typescriptlang.org/) TypeScript extends JavaScript by adding types.

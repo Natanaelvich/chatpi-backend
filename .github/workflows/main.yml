@@ -62,4 +62,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            pm2 restart happy
+            pm2 restart pi

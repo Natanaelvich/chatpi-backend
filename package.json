@@ -8,7 +8,13 @@
     "start": "node dist/shared/infra/http/server.js",
     "dev": "tsnd -r tsconfig-paths/register --transpile-only --ignore-watch node_modules --respawn src/shared/infra/http/server.ts",
     "typeorm": "tsnd -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migrate": "./node_modules/.bin/typeorm migration:run"
+    "migrate": "./node_modules/.bin/typeorm migration:run",
+    "lint" : "yarn eslint ./src --fix --ext ts"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn lint"
+    }
   },
   "dependencies": {
     "@sentry/node": "^5.25.0",
@@ -73,6 +79,7 @@
     "eslint-import-resolver-typescript": "^2.2.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^6.0.0",
     "prettier": "^2.1.0",
     "ts-node-dev": "^1.0.0-pre.58",
     "tsconfig-paths": "^3.9.0",

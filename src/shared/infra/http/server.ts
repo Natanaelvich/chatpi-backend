@@ -182,4 +182,4 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-http.listen(port);
+http.listen(port, () => console.log(`🔥 Server is running in port ${port}`));

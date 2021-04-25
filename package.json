@@ -13,7 +13,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn lint"
+      "pre-push": "git diff HEAD --quiet && yarn lint"
     }
   },
   "dependencies": {

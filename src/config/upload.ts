@@ -32,7 +32,7 @@ export default {
       destination: tmpFolfer,
       filename(request, file, callback) {
         const fileHash = crypto.randomBytes(10).toString('hex');
-        const fileName = `${fileHash}-${file.originalname}`;
+        const fileName = `${fileHash}-${file.fieldname}`;
 
         return callback(null, fileName);
       },

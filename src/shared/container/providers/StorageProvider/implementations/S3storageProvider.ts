@@ -17,7 +17,9 @@ export default class S3storageProvider implements IStorageProvider {
   public async saveFile(file: string): Promise<string> {
     const originalPath = path.resolve(upload.tmpFolfer, file);
 
-    const ContentType = mime.getType(originalPath);
+    const ContentType = mime.lookup(originalPath);
+
+    console.log(originalPath, ContentType);
 
     if (!ContentType) {
       throw new Error('File not found');

@@ -1,0 +1,38 @@
+version: "3.3"
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql-pi
+    restart: always
+    ports:
+      - 3306:3306
+    command: ["mysqld", "--default-authentication-plugin=mysql_native_password"]
+    environment:
+      - MYSQL_ROOT_PASSWORD=abc123
+      - MYSQL_DATABASE=pi
+    volumes:
+      - db-config:/etc/mysql
+      - db-data:/var/lib/mysql
+      - ./db/backup/files/:/data_backup/data
+
+
+  app:
+    build: .
+    container_name: pi
+    restart: always
+    ports:
+      - 3335:3335
+    volumes:
+      - .:/usr/app
+    links:
+      - mysql
+    depends_on:
+      - mysql
+
+
+
+volumes:
+  db-config:
+  db-data:
+    driver: local

@@ -15,6 +15,14 @@ services:
       - db-config:/etc/mysql
       - db-data:/var/lib/mysql
       - ./db/backup/files/:/data_backup/data
+  redis:
+    image: 'bitnami/redis:latest'
+    container_name: redis-pi
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=abc123
 
 
   app:
@@ -27,12 +35,15 @@ services:
       - .:/usr/app
     links:
       - mysql
+      - redis
     depends_on:
       - mysql
+      - redis
 
 
 
 volumes:
   db-config:
+    driver: local
   db-data:
     driver: local

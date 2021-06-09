@@ -18,6 +18,7 @@ import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
 import routes from './routes';
 import iochat from './io';
+import rateLimiterMiddleware from '../middlewares/rateLimit';
 
 const port = process.env.PORT || 3335;
 interface ValidationErrors {
@@ -31,6 +32,10 @@ const io = socket(http);
 iochat(io, app);
 
 app.use(cors({ credentials: true, origin: true }));
+
+app.use(rateLimiterMiddleware);
+app.use(express.json());
+
 app.use('/myAvatars', avatarsMiddleware);
 
 Sentry.init({

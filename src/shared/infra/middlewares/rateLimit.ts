@@ -4,7 +4,7 @@ import { RateLimiterRedis } from 'rate-limiter-flexible';
 import AppError from '@shared/errors/AppError';
 
 const redisClient = redis.createClient({
-  host: process.env.REDIS_HOST || 'redis',
+  host: process.env.REDIS_HOST || 'localhost',
   port: Number(process.env.REDIS_PORT) || 6379,
   password: process.env.REDIS_PASS || undefined,
   enable_offline_queue: false,

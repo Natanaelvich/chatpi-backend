@@ -19,6 +19,9 @@ jobs:
       - name: install dependencies
         run: npm install
 
+      - name: run tests
+        run: npm run test --coverage=false
+
       - name: Run build
         run: npm run build
 

@@ -3,6 +3,9 @@ import axios from 'axios';
 import { Request, Response, NextFunction } from 'express';
 import RedisCacheProvider from '@shared/container/providers/CacheProvider/implementations/RedisCacheProvider';
 
+const { ONESIGNAL_KEY } = process.env;
+const { ONESIGNAL_TOKEN_API } = process.env;
+
 const iochat = (io: Server, app: any): void => {
   const cache = new RedisCacheProvider();
   const typers: Record<string, string> = {};
@@ -44,21 +47,27 @@ const iochat = (io: Server, app: any): void => {
           await cache.save(dataMessage.toUser, [{ ...dataMessage }]);
         }
 
-        const tokenExpo = await cache.recover<any>(
-          `${dataMessage.toUser}:expo_token`,
+        const player_id_onesignal = await cache.recover<any>(
+          `${dataMessage.toUser}:player_id_onesignal`,
         );
-
-        if (tokenExpo) {
+        if (player_id_onesignal) {
           try {
-            await axios.post('https://exp.host/--/api/v2/push/send', {
-              to: tokenExpo,
-              sound: 'default',
-              title: dataMessage.name,
-              body: dataMessage.message,
-              data: {
-                data: 'hello',
+            await axios.post(
+              'https://onesignal.com/api/v1/notifications',
+              {
+                app_id: ONESIGNAL_KEY,
+                include_player_ids: [player_id_onesignal],
+                headings: { en: dataMessage.name },
+                contents: { en: dataMessage.message },
+                large_icon: dataMessage.largeIcon,
               },
-            });
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Basic ${ONESIGNAL_TOKEN_API}`,
+                },
+              },
+            );
           } catch (error) {
             console.warn(error);
           }
@@ -88,8 +97,8 @@ const iochat = (io: Server, app: any): void => {
       );
     });
 
-    socketIo.on('expoToken', async token => {
-      await cache.save(`${user}:expo_token`, token);
+    socketIo.on('player_id_onesignal', async id => {
+      await cache.save(`${user}:player_id_onesignal`, id);
     });
 
     socketIo.once('disconnect', () => {

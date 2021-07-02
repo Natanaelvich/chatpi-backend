@@ -10,34 +10,24 @@ const iochat = (io: Server, app: any): void => {
   const cache = new RedisCacheProvider();
   const typers: Record<string, string> = {};
   const connectedUsers: Record<string, string> = {};
-
   app.use((request: Request, _: Response, next: NextFunction) => {
     request.io = io;
     request.connectedUsers = connectedUsers;
-
     return next();
   });
-
   io.on('connection', async socketIo => {
     const { user } = socketIo.handshake.query;
-
     connectedUsers[user] = socketIo.id;
-
     socketIo.on('message', async message => {
       const dataMessage = JSON.parse(message);
-
       delete typers[dataMessage.user];
-
       io.to(connectedUsers[dataMessage.toUser]).emit(
         'typing',
         JSON.stringify(typers),
       );
-
       io.to(connectedUsers[dataMessage.toUser]).emit('message', message);
-
       if (!connectedUsers[dataMessage.toUser]) {
         const messages = await cache.recover<any>(dataMessage.toUser);
-
         if (messages) {
           await cache.save(dataMessage.toUser, [
             ...messages,
@@ -74,23 +64,17 @@ const iochat = (io: Server, app: any): void => {
         }
       }
     });
-
     socketIo.on('typing', typer => {
       const typerParsed = JSON.parse(typer);
-
       typers[typerParsed.user] = 'typer';
-
       io.to(connectedUsers[typerParsed.toUser]).emit(
         'typing',
         JSON.stringify(typers),
       );
     });
-
     socketIo.on('typingBlur', typer => {
       const typerParsed = JSON.parse(typer);
-
       delete typers[typerParsed.user];
-
       io.to(connectedUsers[typerParsed.toUser]).emit(
         'typing',
         JSON.stringify(typers),
@@ -104,15 +88,11 @@ const iochat = (io: Server, app: any): void => {
     socketIo.once('disconnect', () => {
       delete connectedUsers[user];
       delete typers[user];
-
       io.emit('usersLoggeds', JSON.stringify(connectedUsers));
       io.emit('typing', JSON.stringify(typers));
     });
-
     io.emit('usersLoggeds', JSON.stringify(connectedUsers));
-
     const messages = await cache.recover<any>(user);
-
     if (messages) {
       io.to(connectedUsers[user]).emit(
         'messagesCache',

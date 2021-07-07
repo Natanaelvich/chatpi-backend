@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import axios from 'axios';
+import * as Sentry from '@sentry/node';
 import { Request, Response, NextFunction } from 'express';
 import RedisCacheProvider from '@shared/container/providers/CacheProvider/implementations/RedisCacheProvider';
 
@@ -42,7 +43,7 @@ const iochat = (io: Server, app: any): void => {
         );
         if (player_id_onesignal) {
           try {
-            await axios.post(
+            const response = await axios.post(
               'https://onesignal.com/api/v1/notifications',
               {
                 app_id: ONESIGNAL_KEY,
@@ -58,7 +59,9 @@ const iochat = (io: Server, app: any): void => {
                 },
               },
             );
+            Sentry.captureMessage('onesignal.com/api/v1/notifications', {extra : {response :JSON.stringify(response.data) } })
           } catch (error) {
+            Sentry.captureException(error)
             console.warn(error);
           }
         }

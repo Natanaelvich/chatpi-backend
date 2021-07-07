@@ -59,10 +59,13 @@ const iochat = (io: Server, app: any): void => {
                 },
               },
             );
-            Sentry.captureMessage('onesignal.com/api/v1/notifications', {extra : {response :JSON.stringify(response.data) } })
+            Sentry.captureMessage('onesignal.com/api/v1/notifications', {
+              extra: { response: JSON.stringify(response.data), dataMessage },
+            });
           } catch (error) {
-            Sentry.captureException(error)
-            console.warn(error);
+            Sentry.captureException(error, {
+              extra: { dataMessage, errorResponse: error?.response },
+            });
           }
         }
       }

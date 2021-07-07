@@ -43,7 +43,7 @@ const iochat = (io: Server, app: any): void => {
         );
         if (player_id_onesignal) {
           try {
-            const response = await axios.post(
+            await axios.post(
               'https://onesignal.com/api/v1/notifications',
               {
                 app_id: ONESIGNAL_KEY,
@@ -59,9 +59,6 @@ const iochat = (io: Server, app: any): void => {
                 },
               },
             );
-            Sentry.captureMessage('onesignal.com/api/v1/notifications', {
-              extra: { response: JSON.stringify(response.data), dataMessage },
-            });
           } catch (error) {
             Sentry.captureException(error, {
               extra: { dataMessage, errorResponse: error?.response },

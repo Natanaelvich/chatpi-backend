@@ -31,7 +31,6 @@ export default {
     storage: multer.diskStorage({
       destination: tmpFolfer,
       filename(request, file, callback) {
-        console.log(file);
         const fileHash = crypto.randomBytes(10).toString('hex');
         const fileName = `${fileHash}-${file.fieldname}`;
 

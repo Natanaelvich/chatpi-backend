@@ -1,6 +1,6 @@
 # CHAT PI BACKEND
 
-college integrator project system backend 💚🚀🔥
+ ### A chat that connects people to health professionals, made with expressjs 💚🚀🔥
 
 ## Requirements
 

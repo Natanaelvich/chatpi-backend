@@ -51,6 +51,7 @@ const iochat = (io: Server, app: any): void => {
                 headings: { en: dataMessage.name },
                 contents: { en: dataMessage.message },
                 large_icon: dataMessage.largeIcon,
+                url: dataMessage.url,
               },
               {
                 headers: {

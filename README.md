@@ -1,6 +1,6 @@
-# PI BACKEND
+# CHAT PI BACKEND
 
-college integrator project system backend 💚🚀🔥
+ ### A chat that connects people to health professionals, made with expressjs 💚🚀🔥
 
 ## Requirements
 
@@ -44,3 +44,16 @@ TDD is an acronym for Test Driven Development. The idea of ​​TDD is that you
 • First, write a unit test that will initially fail, considering that the code has not yet been implemented;
 • Create the code that satisfies this test, that is: implement the functionality in question. This first implementation should immediately satisfy the test that was written in the previous cycle;
 • When the code is implemented and the test is satisfied, refactor the code to improve points such as readability. Soon after, run the test again. The new version of the code should also pass without having to modify the written test initially.
+
+## License
+
+Distributed under the MIT license. See [LICENSE](LICENSE) for more information.
+
+---
+
+## Author
+
+Make by Natanael Lima 👋🏽 contact!
+
+[![Linkedin Badge](https://img.shields.io/badge/-Natanelvich-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/natanaelvich/)](https://www.linkedin.com/in/natanaelvich/)
+[![Gmail Badge](https://img.shields.io/badge/-taelima1997@gmail.com-red?style=flat-square&link=mailto:taelima1997@gmail.com)](mailto:taelima1997@gmail.com)

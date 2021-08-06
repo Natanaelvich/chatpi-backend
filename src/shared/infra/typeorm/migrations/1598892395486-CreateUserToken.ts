@@ -14,13 +14,16 @@ export default class CreateUserToken1598892395486
             generationStrategy: 'uuid',
           },
           {
-            name: 'token',
+            name: 'refresh_token',
             type: 'varchar',
-            generationStrategy: 'uuid',
           },
           {
             name: 'user_id',
             type: 'varchar',
+          },
+          {
+            name: 'expires_date',
+            type: 'date',
           },
           {
             name: 'created_at',

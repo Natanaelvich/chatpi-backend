@@ -1,8 +1,10 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
+import { RefreshTokenController } from '../controllers/RefreshTokenController';
 import SessionController from '../controllers/SessionController';
 
 const sessionController = new SessionController();
+const refreshTokenController = new RefreshTokenController();
 
 const sessionsRouter = Router();
 
@@ -16,5 +18,7 @@ sessionsRouter.post(
   }),
   sessionController.create,
 );
+
+sessionsRouter.post('/refresh-token', refreshTokenController.create);
 
 export default sessionsRouter;

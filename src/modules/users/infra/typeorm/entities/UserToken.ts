@@ -16,7 +16,7 @@ class UserToken {
 
   @Column()
   @Generated('uuid')
-  token: string;
+  refresh_token: string;
 
   @Column()
   user_id: string;
@@ -24,6 +24,9 @@ class UserToken {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   provider: User;
+
+  @Column()
+  expires_date: Date;
 
   @CreateDateColumn()
   created_at: Date;

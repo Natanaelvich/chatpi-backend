@@ -1,8 +1,12 @@
+import { ICreateUserTokenDTO } from '../dtos/ICreateUserTokenDTO';
 import UserToken from '../infra/typeorm/entities/UserToken';
 
 export default interface IUserTokenRepository {
-  generate(user_id: string): Promise<UserToken>;
-  findByToken(token: string): Promise<UserToken | undefined>;
+  generate({
+    expires_date,
+    refresh_token,
+    user_id,
+  }: ICreateUserTokenDTO): Promise<UserToken>;
   findByUserIdAndRefreshToken(
     user_id: string,
     refresh_token: string,

@@ -1,28 +1,57 @@
+import { ICreateUserTokenDTO } from '@modules/users/dtos/ICreateUserTokenDTO';
 import UserToken from '@modules/users/infra/typeorm/entities/UserToken';
-import { v4 as uuidv4 } from 'uuid';
 import IUserTokenRepository from '../IUserTokenRepository';
 
 class FakeUserTokenRepository implements IUserTokenRepository {
-  private tokens: UserToken[] = [];
+  private usersTokens: UserToken[] = [];
 
-  public async generate(user_id: string): Promise<UserToken> {
+  async findByUserIdAndRefreshToken(
+    user_id: string,
+    refresh_token: string,
+  ): Promise<UserToken | undefined> {
+    const userToken = this.usersTokens.find(
+      ut => ut.user_id === user_id && ut.refresh_token && refresh_token,
+    );
+    return userToken;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    const userToken = this.usersTokens.find(ut => ut.id === id);
+
+    if (userToken) {
+      this.usersTokens.splice(this.usersTokens.indexOf(userToken));
+    }
+  }
+
+  async findByRefreshToken(
+    refresh_token: string,
+  ): Promise<UserToken | undefined> {
+    const userToken = this.usersTokens.find(
+      ut => ut.refresh_token === refresh_token,
+    );
+    return userToken;
+  }
+
+  async generate({
+    expires_date,
+    refresh_token,
+    user_id,
+  }: ICreateUserTokenDTO): Promise<UserToken> {
     const userToken = new UserToken();
 
     Object.assign(userToken, {
-      id: uuidv4(),
-      token: uuidv4(),
+      expires_date,
+      refresh_token,
       user_id,
-      created_at: new Date(),
-      updated_at: new Date(),
     });
 
-    this.tokens.push(userToken);
+    this.usersTokens.push(userToken);
 
     return userToken;
   }
 
   public async findByToken(token: string): Promise<UserToken | undefined> {
-    const userToken = this.tokens.find(t => t.token === token);
+    const userToken = this.usersTokens.find(t => t.refresh_token === token);
 
     return userToken;
   }

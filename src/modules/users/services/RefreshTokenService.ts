@@ -1,9 +1,9 @@
 import { inject, injectable } from 'tsyringe';
 import { sign, verify } from 'jsonwebtoken';
-import { IUsersTokensRepository } from '@modules/accounts/repositories/IUsersTokensRepository';
 import auth from '@config/auth';
-import { IDateProvider } from '@shared/container/providers/DateProvider/IDateProvider';
 import AppError from '@shared/errors/AppError';
+import { IDateProvider } from '@shared/container/providers/DateProvider/IDateProvider';
+import IUserTokenRepository from '../repositories/IUserTokenRepository';
 
 interface IPayload {
   sub: string;
@@ -18,8 +18,8 @@ interface IResponse {
 @injectable()
 class RefreshTokenService {
   constructor(
-    @inject('UsersTokensRepository')
-    private usersTokensRepository: IUsersTokensRepository,
+    @inject('UserTokenRepository')
+    private userTokenRepository: IUserTokenRepository,
 
     @inject('DayjsDateProvider')
     private dateProvider: IDateProvider,
@@ -31,7 +31,7 @@ class RefreshTokenService {
       auth.jwt.secret_refresh_token,
     ) as IPayload;
 
-    const userToken = await this.usersTokensRepository.findByUserIdAndRefreshToken(
+    const userToken = await this.userTokenRepository.findByUserIdAndRefreshToken(
       user_id,
       token,
     );
@@ -39,7 +39,7 @@ class RefreshTokenService {
       throw new AppError('Refresh token does not exists!');
     }
 
-    await this.usersTokensRepository.deleteById(userToken.id);
+    await this.userTokenRepository.deleteById(userToken.id);
 
     const refresh_token = sign({ email }, auth.jwt.secret_refresh_token, {
       subject: user_id,
@@ -48,10 +48,9 @@ class RefreshTokenService {
 
     const expires_date = this.dateProvider.addDays(
       auth.jwt.expires_refresh_token_days,
-      null,
     );
 
-    await this.usersTokensRepository.create({
+    await this.userTokenRepository.generate({
       refresh_token,
       user_id,
       expires_date,

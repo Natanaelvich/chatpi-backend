@@ -1,50 +1,51 @@
+import { ICreateUserTokenDTO } from '@modules/users/dtos/ICreateUserTokenDTO';
 import IUserTokenRepository from '@modules/users/repositories/IUserTokenRepository';
 import { getRepository, Repository } from 'typeorm';
 import UserToken from '../entities/UserToken';
 
 class UserTokenRepository implements IUserTokenRepository {
-  private ormRepository: Repository<UserToken>;
+  private repository: Repository<UserToken>;
 
   constructor() {
-    this.ormRepository = getRepository(UserToken);
+    this.repository = getRepository(UserToken);
+  }
+
+  async generate({
+    expires_date,
+    refresh_token,
+    user_id,
+  }: ICreateUserTokenDTO): Promise<UserToken> {
+    const userToken = this.repository.create({
+      expires_date,
+      refresh_token,
+      user_id,
+    });
+
+    await this.repository.save(userToken);
+
+    return userToken;
   }
 
   async findByUserIdAndRefreshToken(
     user_id: string,
     refresh_token: string,
   ): Promise<UserToken | undefined> {
-    const userTokens = await this.ormRepository.findOne({
+    const usersTokens = await this.repository.findOne({
       user_id,
       refresh_token,
     });
-    return userTokens;
+    return usersTokens;
   }
 
   async deleteById(id: string): Promise<void> {
-    await this.ormRepository.delete(id);
+    await this.repository.delete(id);
   }
 
-  async findByRefreshToken(token: string): Promise<UserToken | undefined> {
-    const userToken = await this.ormRepository.findOne({
-      refresh_token: token,
-    });
-    return userToken;
-  }
+  async findByRefreshToken(
+    refresh_token: string,
+  ): Promise<UserToken | undefined> {
+    const userToken = await this.repository.findOne({ refresh_token });
 
-  public async findByToken(token: string): Promise<UserToken | undefined> {
-    const findUserToken = await this.ormRepository.findOne({
-      where: { token },
-    });
-
-    return findUserToken;
-  }
-
-  public async generate(user_id: string): Promise<UserToken> {
-    const userToken = this.ormRepository.create({
-      user_id,
-    });
-
-    await this.ormRepository.save(userToken);
     return userToken;
   }
 }

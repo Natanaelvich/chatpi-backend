@@ -1,5 +1,8 @@
+import auth from '@config/auth';
 import FakeUserRepository from '@modules/users/repositories/fakes/FakeUserRepository';
+import DayjsDateProvider from '@shared/container/providers/DateProvider/implementations/DayjsDateProvider';
 import AppError from '@shared/errors/AppError';
+import { sign } from 'jsonwebtoken';
 import FakeBCryptHashProvider from '../providers/HashProvider/fakes/FakeBCryptHashProvider copy';
 import FakeUserTokenRepository from '../repositories/fakes/FakeUserTokenRepository';
 import ResetPasswordService from './ResetPasswordService';
@@ -8,6 +11,8 @@ let fakeUserRepository: FakeUserRepository;
 let resetPassword: ResetPasswordService;
 let fakeUserTokenRepository: FakeUserTokenRepository;
 let fakeBCryptHashProvider: FakeBCryptHashProvider;
+
+const dateProvider = new DayjsDateProvider();
 
 describe('ResetPasswordService', () => {
   beforeEach(() => {
@@ -32,7 +37,23 @@ describe('ResetPasswordService', () => {
 
     const generateHash = jest.spyOn(fakeBCryptHashProvider, 'generateHash');
 
-    const { token } = await fakeUserTokenRepository.generate(user.id);
+    // REFACT TOKEN TO PROVIDER TOKEN
+    const {
+      jwt: { exp, secret },
+    } = auth;
+
+    const token = sign({}, secret, {
+      subject: user.id,
+      expiresIn: exp,
+    });
+
+    const expires_date = dateProvider.addHours(3);
+
+    await fakeUserTokenRepository.generate({
+      refresh_token: token,
+      user_id: user.id,
+      expires_date,
+    });
 
     await resetPassword.execute({
       password: '123123',
@@ -55,7 +76,15 @@ describe('ResetPasswordService', () => {
   });
 
   it('should not be able to reset the password with non-exisiting user', async () => {
-    const { token } = await fakeUserTokenRepository.generate('no-user');
+    // REFACT TOKEN TO PROVIDER TOKEN
+    const {
+      jwt: { exp, secret },
+    } = auth;
+
+    const token = sign({}, secret, {
+      subject: 'non-exisiting user',
+      expiresIn: exp,
+    });
 
     await expect(
       resetPassword.execute({
@@ -73,7 +102,15 @@ describe('ResetPasswordService', () => {
       clerk: '',
     });
 
-    const { token } = await fakeUserTokenRepository.generate(user.id);
+    // REFACT TOKEN TO PROVIDER TOKEN
+    const {
+      jwt: { exp, secret },
+    } = auth;
+
+    const token = sign({}, secret, {
+      subject: user.id,
+      expiresIn: exp,
+    });
 
     jest.spyOn(Date, 'now').mockImplementationOnce(() => {
       const customDate = new Date();

@@ -3,6 +3,9 @@ import path from 'path';
 
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import AppError from '@shared/errors/AppError';
+import auth from '@config/auth';
+import { sign } from 'jsonwebtoken';
+import { IDateProvider } from '@shared/container/providers/DateProvider/IDateProvider';
 import IUserRepository from '../repositories/IUserRepository';
 import IUserTokenRepository from '../repositories/IUserTokenRepository';
 
@@ -16,11 +19,14 @@ class SendForgotPasswordEmailService {
     @inject('UserRepository')
     private userRepository: IUserRepository,
 
+    @inject('UserTokenRepository')
+    private userTokenRepository: IUserTokenRepository,
+
     @inject('MailProvider')
     private mailProvider: IMailProvider,
 
-    @inject('UserTokenRepository')
-    private userTokenRepository: IUserTokenRepository,
+    @inject('DayjsDateProvider')
+    private dateProvider: IDateProvider,
   ) {}
 
   public async execute({ email }: Request): Promise<void> {
@@ -30,7 +36,23 @@ class SendForgotPasswordEmailService {
       throw new AppError('User does not exists');
     }
 
-    const { token } = await this.userTokenRepository.generate(userExistis.id);
+    // REFACT TOKEN TO PROVIDER TOKEN
+    const {
+      jwt: { exp, secret },
+    } = auth;
+
+    const token = sign({}, secret, {
+      subject: userExistis.id,
+      expiresIn: exp,
+    });
+
+    const expires_date = this.dateProvider.addHours(3);
+
+    await this.userTokenRepository.generate({
+      refresh_token: token,
+      user_id: userExistis.id,
+      expires_date,
+    });
 
     const forgotPasswordTemplate = path.resolve(
       __dirname,

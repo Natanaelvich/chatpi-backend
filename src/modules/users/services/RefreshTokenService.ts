@@ -26,10 +26,20 @@ class RefreshTokenService {
   ) {}
 
   async execute(token: string): Promise<IResponse> {
-    const { email, sub: user_id } = verify(
-      token,
-      auth.jwt.secret_refresh_token,
-    ) as IPayload;
+    let email = '';
+    let user_id = '';
+
+    try {
+      const { email: emailVerfify, sub: user_id_verify } = verify(
+        token,
+        auth.jwt.secret_refresh_token,
+      ) as IPayload;
+
+      email = emailVerfify;
+      user_id = user_id_verify;
+    } catch (error) {
+      throw new AppError(error.message, 401);
+    }
 
     const userToken = await this.userTokenRepository.findByUserIdAndRefreshToken(
       user_id,

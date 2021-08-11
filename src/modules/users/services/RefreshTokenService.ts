@@ -29,10 +29,20 @@ class RefreshTokenService {
     let email = '';
     let user_id = '';
 
+    const {
+      jwt: {
+        exp,
+        expires_in_refresh_token,
+        expires_refresh_token_days,
+        secret,
+        secret_refresh_token,
+      },
+    } = auth;
+
     try {
       const { email: emailVerfify, sub: user_id_verify } = verify(
         token,
-        auth.jwt.secret_refresh_token,
+        secret_refresh_token,
       ) as IPayload;
 
       email = emailVerfify;
@@ -51,14 +61,12 @@ class RefreshTokenService {
 
     await this.userTokenRepository.deleteById(userToken.id);
 
-    const refresh_token = sign({ email }, auth.jwt.secret_refresh_token, {
+    const refresh_token = sign({ email }, secret_refresh_token, {
       subject: user_id,
-      expiresIn: auth.jwt.expires_refresh_token_days,
+      expiresIn: expires_in_refresh_token,
     });
 
-    const expires_date = this.dateProvider.addDays(
-      auth.jwt.expires_refresh_token_days,
-    );
+    const expires_date = this.dateProvider.addDays(expires_refresh_token_days);
 
     await this.userTokenRepository.generate({
       refresh_token,
@@ -66,9 +74,9 @@ class RefreshTokenService {
       expires_date,
     });
 
-    const newToken = sign({}, auth.jwt.secret, {
+    const newToken = sign({}, secret, {
       subject: user_id,
-      expiresIn: auth.jwt.exp,
+      expiresIn: exp,
     });
 
     return {

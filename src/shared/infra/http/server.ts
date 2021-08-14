@@ -5,7 +5,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import avatarsMiddleware from 'adorable-avatars';
 import cors from 'cors';
-import { ValidationError } from 'yup';
+
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 
@@ -16,6 +16,7 @@ import socket from 'socket.io';
 
 import AppError from '@shared/errors/AppError';
 import upload from '@config/upload';
+import { errors } from 'celebrate';
 import routes from './routes';
 import iochat from './io';
 import rateLimiterMiddleware from '../middlewares/rateLimit';
@@ -57,19 +58,9 @@ app.use(routes);
 
 app.use(Sentry.Handlers.errorHandler());
 
+app.use(errors());
+
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
-  if (err instanceof ValidationError) {
-    const errors: ValidationErrors = {};
-
-    err.inner.forEach(erro => {
-      errors[erro.path] = erro.errors;
-    });
-
-    return response.status(400).json({
-      status: 'validation fails',
-      errors,
-    });
-  }
   if (err instanceof AppError) {
     return response.status(err.statusCode).json({
       status: 'error',

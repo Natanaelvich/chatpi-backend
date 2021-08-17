@@ -73,8 +73,6 @@ class AuthenticateUserService {
       expires_refresh_token_days,
     );
 
-    await this.userTokenRepository.deleteById(user.id);
-
     await this.userTokenRepository.generate({
       user_id: user.id,
       refresh_token,

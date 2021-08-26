@@ -23,6 +23,7 @@ For development, you will only need Node.js installed on your environement.
 - [Eslint](https://eslint.org/) is used to prevent JavaScript error.
 - [Prettier](https://prettier.io/docs/en/index.html) is an opinionated code formatter.
 - [Typecript](https://www.typescriptlang.org/) TypeScript extends JavaScript by adding types.
+- [SocketIO](https://socket.io/) For Connection in real time.
 
 # Applied concepts
 

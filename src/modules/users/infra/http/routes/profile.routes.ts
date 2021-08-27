@@ -1,9 +1,11 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import ProfileController from '../controllers/ProfileController';
+import UpdateClerkController from '../controllers/UpdateClerkController';
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const profileController = new ProfileController();
+const updateClerkController = new UpdateClerkController();
 
 const profileRouter = Router();
 
@@ -20,6 +22,16 @@ profileRouter.put(
     }),
   }),
   profileController.update,
+);
+
+profileRouter.put(
+  '/update/clerk',
+  celebrate({
+    [Segments.BODY]: Joi.object({
+      clerk: Joi.string().required(),
+    }),
+  }),
+  updateClerkController.update,
 );
 profileRouter.get('/', profileController.show);
 
